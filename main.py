@@ -1,10 +1,7 @@
 import sys, os, time
 import han_print as hp
 
-#This is more detailed visualisation of the solving of the Hanoi Towers puzzle via recursion
-
 moves_list = []
-
 
 #The main recursive function that generates the list of moves solving the Towers of Hanoi puzzle with the number of discs equal num
 
@@ -18,19 +15,37 @@ def hanoi_towers(num, source, target, aux):
         moves_list.append([source, target])
         hanoi_towers(num - 1, aux, target, source)
 
+
+
 #The animation function that animates the movement of the discs using the above list of moves as a template
         
-def animation(m_l, A, C, B, pause):
+def animation(pause):
         move_count = 0
+        A = [0, 0, 0]
+        A.extend([i for i in range(num + 1)])
+        A.append("A")
+        B = [0, 0, 0]
+        B.extend([0 for i in range(num + 1)])
+        B.append("B")
+        C = [0, 0, 0]
+        C.extend([0 for i in range(num + 1)])
+        C.append("C")
+        
+        hanoi_towers(num, A, C, B)
+        
+        
         os.system('cls' if os.name == 'nt' else 'clear')
-        hp.three_towers_print(A, C, B)
+        hp.three_towers_print(A, C, B, True)
+        print(f"\nNumber of discs: {num}")
         time.sleep(1.5)
         
-        l = len(A)
+        l = len(A) - 1
 
-        for move in m_l:
+#The loop going throught all the moves
+        for move in moves_list:
             move_count += 1
             
+            #The movement of the top disc upwards
             for i in range(l):
                 if move[0][i] != 0:
                     n = i
@@ -39,20 +54,20 @@ def animation(m_l, A, C, B, pause):
                     move[0][n - 1] = move[0][n]
                     move[0][n] = 0
                     os.system('cls' if os.name == 'nt' else 'clear')
-                    hp.three_towers_print(A, C, B)
+                    hp.three_towers_print(A, C, B, True)
                     print(f"\nMOVE COUNT: {move_count}")
                     time.sleep(pause)
                     n -= 1
-
+                   
+                    
+            
+            #The movement of the disc horizontally
+            hp.horizon_move(move, A, C, B, num, move_count, pause)
+            
             move[1][1] = move[0][1]
             move[0][1] = 0
-            os.system('cls' if os.name == 'nt' else 'clear')
-            hp.three_towers_print(A, C, B)
-            print(f"\nMOVE COUNT: {move_count}")
-            time.sleep(pause)
-            
 
-            
+            #The movement of the disc downwards            
             for i in range(2, l):
                 if move[1][i] != 0:
                     n = i
@@ -63,7 +78,7 @@ def animation(m_l, A, C, B, pause):
                 move[1][j + 1] = move[1][j]
                 move[1][j] = 0
                 os.system('cls' if os.name == 'nt' else 'clear')
-                hp.three_towers_print(A, C, B)
+                hp.three_towers_print(A, C, B, True)
                 print(f"\nMOVE COUNT: {move_count}")
                 time.sleep(pause)
                 
@@ -71,15 +86,8 @@ def animation(m_l, A, C, B, pause):
         
 if __name__ == '__main__':
     
-    num = 6
+    num = 5
     pause = 0.07
-    A = [0, 0, 0]
-    A.extend([i for i in range(num + 1)])
-    B = [0, 0, 0]
-    B.extend([0 for i in range(num + 1)])
-    C = [0, 0, 0]
-    C.extend([0 for i in range(num + 1)])
     
-    hanoi_towers(num, A, C, B)
-    animation(moves_list, A, C, B, pause)
+    animation(pause)
     
